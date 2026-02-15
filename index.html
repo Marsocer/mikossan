@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"> <!-- 新增maximum-scale防止缩放错乱 -->
+    <title>星砂岛钓鱼佬手记</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>星砂岛钓鱼佬手记</h1>
+        
+        <!-- 导入/导出按钮 -->
+        <div class="import-export-btn-group">
+            <button id="export-collect" class="export-btn">导出图鉴信息</button>
+            <button id="import-collect" class="import-btn">导入图鉴信息</button>
+        </div>
+
+        <div class="tip-text">✨ 收藏标记保存在本地浏览器，清除缓存会丢失哦～更换设备或清除缓存前记得先导出~</div>
+
+        <!-- 全局搜索框 -->
+        <div class="search-wrapper">
+            <input 
+                type="text" 
+                id="global-search" 
+                placeholder="搜索名称 / 季节 / 水域 / 窝料 / 时间(如15点)..."
+            >
+            <button id="search-btn" class="search-btn">搜索</button>
+            <button class="quick-btn" onclick="quickFilter('all-day')">全天</button>
+            <button class="quick-btn" onclick="quickFilter('day')">白天</button>
+            <button class="quick-btn" onclick="quickFilter('night')">夜晚</button>
+        </div>
+
+        <!-- 筛选栏 -->
+        <div class="filter-bar">
+            <div class="filter-item">
+                <label>季节:</label>
+                <select id="season-filter">
+                    <option value="all" selected>全部</option>
+                    <option value="春">春季</option>
+                    <option value="夏">夏季</option>
+                    <option value="秋">秋季</option>
+                    <option value="冬">冬季</option>
+                </select>
+            </div>
+            <div class="filter-item">
+                <label>水域:</label>
+                <select id="water-filter">
+                    <option value="all" selected>全部</option>
+                    <option value="云霓海域">云霓海域</option>
+                    <option value="明洋海域">明洋海域</option>
+                    <option value="孢子瀑布(悬梦亭)">孢子瀑布(悬梦亭)</option>
+                    <option value="河流">河流</option>
+                    <option value="珊瑚海">珊瑚海</option>
+                    <option value="暗水畔">暗水畔</option>
+                    <option value="湖泊">湖泊</option>
+                    <option value="海洋">海洋</option>
+                </select>
+            </div>
+            <div class="filter-item">
+                <label>天气:</label>
+                <select id="weather-filter">
+                    <option value="all" selected>全部</option>
+                    <option value="雪天">雪天</option>
+                    <option value="晴天">晴天</option>
+                    <option value="雨天">雨天</option>
+                </select>
+            </div>
+            <div class="filter-item">
+                <label>窝料:</label>
+                <select id="bait-filter">
+                    <option value="all" selected>全部</option>
+                    <option value="鱼肉饵料">鱼肉饵料</option>
+                    <option value="昆虫饵料">昆虫饵料</option>
+                    <option value="素食饵料">素食饵料</option>
+                </select>
+            </div>
+            <div class="filter-item">
+                <label>图鉴状态:</label>
+                <select id="collect-filter">
+                    <option value="all" selected>全部</option>
+                    <option value="collected">已拥有</option>
+                    <option value="uncollected">未拥有</option>
+                </select>
+            </div>
+            <div class="filter-item">
+                <label>时段:</label>
+                <select id="time-filter">
+                    <option value="all" selected>全部</option>
+                    <option value="0-6">凌晨0-6点</option>
+                    <option value="6-12">上午6-12点</option>
+                    <option value="12-18">下午12-18点</option>
+                    <option value="18-24">晚上18-24点</option>
+                    <option value="cross">跨0点</option>
+                </select>
+            </div>
+            <div class="filter-item">
+                <button id="reset-filter" class="reset-btn">重置筛选</button>
+            </div>
+        </div>
+
+        <!-- 已选筛选标签 -->
+        <div class="filter-tags" id="filter-tags"></div>
+
+        <!-- 统计 -->
+        <div class="stats">
+            图鉴总计: <span id="total-count">0</span> 种 | 已收集: <span id="collected-count">0</span> 种
+        </div>
+
+        <!-- 无结果提示 -->
+        <div id="empty-tip" class="empty-tip" style="display:none;">
+            <p>暂无匹配的鱼种哦～😟</p>
+            <button onclick="resetAllFilters()" class="reset-btn">一键重置筛选</button>
+        </div>
+
+        <!-- 名称列表 -->
+        <div class="name-list" id="name-list"></div>
+
+        <!-- 底部署名 -->
+        <div class="footer-signature">
+            <a href="https://docs.qq.com/sheet/DZWRzREJ2Z0ttR0RC?tab=BB08J2" target="_blank" rel="noopener noreferrer">腾讯文档在线表格版(保存到自己的腾讯文档里再用)</a>
+            <a target="_blank" rel="noopener noreferrer">有问题可联系邮箱:socer@foxmail.com</a>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

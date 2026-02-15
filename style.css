@@ -1,0 +1,403 @@
+/* ========== 1. 浏览器默认样式重置 ========== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Microsoft Yahei", "PingFang SC", "Helvetica Neue", sans-serif;
+}
+html, body {
+    width: 100%;
+    height: 100%;
+    background-color: #fff;
+}
+button, input, select {
+    outline: none;
+    border: none;
+    background: none;
+    font-family: inherit;
+}
+a {
+    text-decoration: none;
+}
+
+/* ========== 2. 全局容器 ========== */
+.container {
+    max-width: 1200px;
+    width: 100%;
+    margin: 0 auto;
+    padding: 20px 15px;
+}
+h1 {
+    text-align: center;
+    color: #333;
+    margin-bottom: 20px;
+    font-size: 28px;
+    font-weight: 600;
+}
+
+/* ========== 3. 导入导出按钮组 ========== */
+.import-export-btn-group {
+    text-align: center;
+    margin-bottom: 15px;
+}
+.export-btn, .import-btn {
+    padding: 10px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    margin: 0 5px;
+    transition: all 0.2s ease;
+}
+.export-btn {
+    background-color: #52c41a;
+    color: #fff;
+}
+.import-btn {
+    background-color: #409eff;
+    color: #fff;
+}
+.export-btn:hover {
+    background-color: #49a81a;
+}
+.import-btn:hover {
+    background-color: #3385d6;
+}
+
+/* ========== 4. 提示文本 ========== */
+.tip-text {
+    text-align: center;
+    font-size: 14px;
+    color: #999;
+    margin-bottom: 20px;
+    line-height: 1.5;
+}
+
+/* ========== 5. 搜索栏 ========== */
+.search-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+}
+#global-search {
+    width: 100%;
+    max-width: 350px;
+    height: 36px;
+    padding: 0 12px;
+    border: 1px solid #e6e6e6;
+    border-radius: 4px;
+    font-size: 14px;
+    color: #333;
+}
+.search-btn {
+    height: 36px;
+    padding: 0 18px;
+    background-color: #409eff;
+    color: #fff;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: all 0.2s ease;
+}
+.search-btn:hover {
+    background-color: #3385d6;
+}
+.quick-btn {
+    padding: 0 15px;
+    height: 36px;
+    border: 1px solid #409eff;
+    background: #fff;
+    color: #409eff;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: all 0.2s ease;
+}
+.quick-btn:hover {
+    background: #409eff;
+    color: #fff;
+}
+
+/* ========== 6. 筛选栏 ========== */
+.filter-bar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 12px 15px;
+    padding: 15px 0;
+    border-bottom: 1px solid #f0f0f0;
+    margin-bottom: 20px;
+}
+.filter-item {
+    display: flex;
+    align-items: center;
+    font-size: 14px;
+    white-space: nowrap;
+}
+.filter-item label {
+    margin-right: 8px;
+    color: #666;
+}
+.filter-item select {
+    height: 32px;
+    padding: 0 10px;
+    border: 1px solid #e6e6e6;
+    border-radius: 4px;
+    font-size: 14px;
+    color: #333;
+    min-width: 120px;
+}
+.reset-btn {
+    height: 32px;
+    padding: 0 15px;
+    border: 1px solid #ff4d4f;
+    background-color: #fff;
+    color: #ff4d4f;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: all 0.2s ease;
+}
+.reset-btn:hover {
+    background-color: #ff4d4f;
+    color: #fff;
+}
+
+/* ========== 7. 统计信息 ========== */
+.stats {
+    text-align: center;
+    font-size: 14px;
+    color: #666;
+    margin-bottom: 20px;
+}
+
+/* ========== 8. 无结果提示 ========== */
+.empty-tip {
+    text-align: center;
+    padding: 50px 0;
+    color: #999;
+    font-size: 14px;
+}
+.empty-tip .reset-btn {
+    margin-top: 15px;
+}
+
+/* ========== 9. 鱼类卡片列表（加宽卡片宽度） ========== */
+.name-list {
+    max-width: 1200px;
+    width: 100%;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+    gap: 20px;
+}
+
+/* ========== 10. 鱼类卡片样式 ========== */
+.name-item {
+    position: relative;
+    padding: 20px;
+    border-radius: 12px;
+    background-color: #fff;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s ease; /* 延长过渡时间，动画更丝滑 */
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    overflow: hidden;
+    /* 取消卡片默认光标，仅开关显示指针 */
+    cursor: default;
+}
+/* 核心：鼠标悬浮上浮效果 */
+.name-item:hover {
+    transform: translateY(-6px); /* 向上浮6px */
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12); /* 强化阴影，提升层次感 */
+}
+
+/* --- 等级配色与描边 --- */
+/* 鱼王：黄色点缀 + 黄色描边 */
+.name-item.rank-鱼王 {
+    border: 1px solid #ffd766;
+}
+.name-item.rank-鱼王::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 12px;
+    height: 100%;
+    background-color: #ffd766;
+}
+
+/* 传说：紫色点缀 + 紫色描边 */
+.name-item.rank-传说 {
+    border: 1px solid #d885e8;
+}
+.name-item.rank-传说::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 12px;
+    height: 100%;
+    background-color: #d885e8;
+}
+
+/* 优质：蓝色点缀 + 蓝色描边 */
+.name-item.rank-优质 {
+    border: 1px solid #66b3ff;
+}
+.name-item.rank-优质::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 12px;
+    height: 100%;
+    background-color: #66b3ff;
+}
+
+/* 普通：绿色点缀 + 绿色描边 */
+.name-item.rank-普通 {
+    border: 1px solid #a5e885;
+}
+.name-item.rank-普通::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 12px;
+    height: 100%;
+    background-color: #a5e885;
+}
+
+/* 常见：浅灰点缀 + 浅灰描边 */
+.name-item.rank-常见 {
+    border: 1px solid #e0e0e0;
+}
+.name-item.rank-常见::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 12px;
+    height: 100%;
+    background-color: #e0e0e0;
+}
+
+/* --- 卡片头部：鱼名 + 开关 --- */
+.card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.fish-name {
+    font-size: 24px;
+    font-weight: 600;
+    color: #333;
+    margin-left: 8px;
+}
+.toggle-switch {
+    width: 40px;
+    height: 24px;
+    border-radius: 12px;
+    background-color: #e0e0e0;
+    position: relative;
+    transition: all 0.2s ease;
+    cursor: pointer; /* 仅开关显示指针光标 */
+}
+.toggle-switch::after {
+    content: '';
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background-color: #fff;
+    transition: all 0.2s ease;
+}
+/* 已拥有状态：绿色开关 */
+.name-item.owned .toggle-switch {
+    background-color: #52c41a;
+}
+.name-item.owned .toggle-switch::after {
+    left: 18px;
+}
+
+/* --- 卡片信息区：大屏一行，小屏换行 --- */
+.card-info {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    font-size: 12px;
+    color: #666;
+    margin-left: 8px;
+}
+.info-item {
+    /* 大屏默认：强制一行 + 超长省略 */
+    display: flex;
+    align-items: flex-start; /* 换行时对齐更美观 */
+    gap: 4px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.info-label {
+    font-weight: 500;
+    color: #999;
+    flex-shrink: 0; /* 标签不压缩 */
+}
+
+/* ========== 11. 页脚 ========== */
+.footer-signature {
+    margin-top: 40px;
+    text-align: center;
+    font-size: 14px;
+    color: #999;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding-bottom: 20px;
+}
+.footer-signature a {
+    color: #409eff;
+    text-decoration: none;
+}
+.footer-signature a:hover {
+    text-decoration: underline;
+}
+
+/* ========== 12. 响应式适配（核心：小屏自动换行） ========== */
+@media (max-width: 768px) {
+    h1 {
+        font-size: 24px;
+    }
+    .filter-bar {
+        gap: 8px 10px;
+    }
+    .name-list {
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 15px;
+    }
+    .name-item {
+        padding: 16px;
+    }
+    .fish-name {
+        font-size: 20px;
+    }
+    /* 小屏：取消强制一行，允许换行 */
+    .info-item {
+        white-space: normal;
+        overflow: visible;
+        text-overflow: clip;
+        line-height: 1.4; /* 换行后行高更舒适 */
+    }
+    /* 小屏悬浮上浮幅度减小，更适配移动端 */
+    .name-item:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+    }
+}
