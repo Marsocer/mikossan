@@ -1,4 +1,22 @@
-/* ========== 1. 浏览器默认样式重置 ========== */
+/* ========== 1. 变量定义 ========== */
+:root {
+    --primary-color: #409eff;
+    --success-color: #52c41a;
+    --danger-color: #ff4d4f;
+    --text-primary: #333;
+    --text-secondary: #666;
+    --text-light: #999;
+    --border-color: #e6e6e6;
+    --shadow-light: 0 4px 12px rgba(0, 0, 0, 0.08);
+    --shadow-hover: 0 8px 20px rgba(0, 0, 0, 0.12);
+    --rank-yellow: #ffd766;
+    --rank-purple: #d885e8;
+    --rank-blue: #66b3ff;
+    --rank-green: #a5e885;
+    --rank-gray: #e0e0e0;
+}
+
+/* ========== 2. 重置 ========== */
 * {
     margin: 0;
     padding: 0;
@@ -20,7 +38,7 @@ a {
     text-decoration: none;
 }
 
-/* ========== 2. 全局容器 ========== */
+/* ========== 3. 全局容器 ========== */
 .container {
     max-width: 1200px;
     width: 100%;
@@ -29,13 +47,13 @@ a {
 }
 h1 {
     text-align: center;
-    color: #333;
+    color: var(--text-primary);
     margin-bottom: 20px;
     font-size: 28px;
     font-weight: 600;
 }
 
-/* ========== 3. 导入导出按钮组 ========== */
+/* ========== 4. 导入导出按钮 ========== */
 .import-export-btn-group {
     text-align: center;
     margin-bottom: 15px;
@@ -49,78 +67,85 @@ h1 {
     transition: all 0.2s ease;
 }
 .export-btn {
-    background-color: #52c41a;
+    background-color: var(--success-color);
     color: #fff;
 }
 .import-btn {
-    background-color: #409eff;
+    background-color: var(--primary-color);
     color: #fff;
 }
-.export-btn:hover {
-    background-color: #49a81a;
-}
-.import-btn:hover {
-    background-color: #3385d6;
-}
+.export-btn:hover { background-color: #49a81a; }
+.import-btn:hover { background-color: #3385d6; }
 
-/* ========== 4. 提示文本 ========== */
+/* ========== 5. 提示文本 ========== */
 .tip-text {
     text-align: center;
     font-size: 14px;
-    color: #999;
+    color: var(--text-light);
     margin-bottom: 20px;
     line-height: 1.5;
+    width: 100%;
+    display: block;
+    padding: 0 10px;
 }
 
-/* ========== 5. 搜索栏 ========== */
+/* ========== 6. 搜索栏 ========== */
 .search-wrapper {
     display: flex;
     align-items: center;
     justify-content: center;
     gap: 8px;
     margin-bottom: 20px;
-    flex-wrap: wrap;
+    width: 100%;
+    padding: 0 5px;
 }
 #global-search {
-    width: 100%;
-    max-width: 350px;
+    flex: 1;
+    min-width: 0;
     height: 36px;
     padding: 0 12px;
-    border: 1px solid #e6e6e6;
+    border: 1px solid var(--border-color);
     border-radius: 4px;
     font-size: 14px;
-    color: #333;
+    color: var(--text-primary);
 }
 .search-btn {
+    flex-shrink: 0;
     height: 36px;
     padding: 0 18px;
-    background-color: #409eff;
+    background-color: var(--primary-color);
     color: #fff;
     border-radius: 4px;
     cursor: pointer;
     font-size: 14px;
     transition: all 0.2s ease;
+    min-width: 80px;
 }
-.search-btn:hover {
-    background-color: #3385d6;
+.search-btn:hover { background-color: #3385d6; }
+
+/* ========== 7. 季节复选框组 ========== */
+.season-check-group {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    flex-wrap: wrap;
 }
-.quick-btn {
-    padding: 0 15px;
-    height: 36px;
-    border: 1px solid #409eff;
-    background: #fff;
-    color: #409eff;
-    border-radius: 4px;
-    cursor: pointer;
+.season-checkbox-item {
+    display: flex;
+    align-items: center;
+    gap: 4px;
     font-size: 14px;
-    transition: all 0.2s ease;
+    color: var(--text-secondary);
+    cursor: pointer;
 }
-.quick-btn:hover {
-    background: #409eff;
-    color: #fff;
+.season-checkbox-item input {
+    width: 16px;
+    height: 16px;
+    border: 1px solid var(--border-color);
+    border-radius: 2px;
 }
 
-/* ========== 6. 筛选栏 ========== */
+/* ========== 8. 筛选栏 ========== */
 .filter-bar {
     display: flex;
     flex-wrap: wrap;
@@ -139,53 +164,81 @@ h1 {
 }
 .filter-item label {
     margin-right: 8px;
-    color: #666;
+    color: var(--text-secondary);
 }
 .filter-item select {
     height: 32px;
     padding: 0 10px;
-    border: 1px solid #e6e6e6;
+    border: 1px solid var(--border-color);
     border-radius: 4px;
     font-size: 14px;
-    color: #333;
+    color: var(--text-primary);
     min-width: 120px;
 }
 .reset-btn {
     height: 32px;
     padding: 0 15px;
-    border: 1px solid #ff4d4f;
+    border: 1px solid var(--danger-color);
     background-color: #fff;
-    color: #ff4d4f;
+    color: var(--danger-color);
     border-radius: 4px;
     cursor: pointer;
     font-size: 14px;
     transition: all 0.2s ease;
 }
 .reset-btn:hover {
-    background-color: #ff4d4f;
+    background-color: var(--danger-color);
     color: #fff;
 }
 
-/* ========== 7. 统计信息 ========== */
+/* ========== 9. 统计信息 ========== */
 .stats {
-    text-align: center;
-    font-size: 14px;
-    color: #666;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
     margin-bottom: 20px;
 }
+.progress-container {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+.progress-bar {
+    width: 100px;
+    height: 8px;
+    background-color: #f0f0f0;
+    border-radius: 4px;
+    overflow: hidden;
+}
+.progress-fill {
+    height: 100%;
+    background-color: var(--success-color);
+    border-radius: 4px;
+    transition: width 0.3s ease;
+    width: 0%;
+}
+.progress-text {
+    font-size: 13px;
+    color: var(--text-secondary);
+    min-width: 45px;
+}
 
-/* ========== 8. 无结果提示 ========== */
+/* ========== 10. 无结果提示 ========== */
 .empty-tip {
     text-align: center;
     padding: 50px 0;
-    color: #999;
+    color: var(--text-light);
     font-size: 14px;
 }
 .empty-tip .reset-btn {
     margin-top: 15px;
 }
+.hidden {
+    display: none !important;
+}
 
-/* ========== 9. 鱼类卡片列表（加宽卡片宽度） ========== */
+/* ========== 11. 卡片列表 ========== */
 .name-list {
     max-width: 1200px;
     width: 100%;
@@ -195,99 +248,50 @@ h1 {
     gap: 20px;
 }
 
-/* ========== 10. 鱼类卡片样式 ========== */
+/* ========== 12. 卡片样式 ========== */
 .name-item {
     position: relative;
     padding: 20px;
     border-radius: 12px;
     background-color: #fff;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-    transition: all 0.3s ease; /* 延长过渡时间，动画更丝滑 */
+    box-shadow: var(--shadow-light);
+    transition: all 0.3s ease;
     display: flex;
     flex-direction: column;
     gap: 16px;
     overflow: hidden;
-    /* 取消卡片默认光标，仅开关显示指针 */
     cursor: default;
 }
-/* 核心：鼠标悬浮上浮效果 */
 .name-item:hover {
-    transform: translateY(-6px); /* 向上浮6px */
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12); /* 强化阴影，提升层次感 */
+    transform: translateY(-6px);
+    box-shadow: var(--shadow-hover);
 }
 
-/* --- 等级配色与描边 --- */
-/* 鱼王：黄色点缀 + 黄色描边 */
-.name-item.rank-鱼王 {
-    border: 1px solid #ffd766;
-}
-.name-item.rank-鱼王::before {
+/* 所有等级通用的伪元素位置 */
+.name-item::before {
     content: '';
     position: absolute;
     top: 0;
     left: 0;
     width: 12px;
     height: 100%;
-    background-color: #ffd766;
 }
 
-/* 传说：紫色点缀 + 紫色描边 */
-.name-item.rank-传说 {
-    border: 1px solid #d885e8;
-}
-.name-item.rank-传说::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 12px;
-    height: 100%;
-    background-color: #d885e8;
-}
+/* 等级配色 */
+.name-item.rank-鱼王::before { background-color: var(--rank-yellow); }
+.name-item.rank-传说::before { background-color: var(--rank-purple); }
+.name-item.rank-优质::before { background-color: var(--rank-blue); }
+.name-item.rank-普通::before { background-color: var(--rank-green); }
+.name-item.rank-常见::before { background-color: var(--rank-gray); }
 
-/* 优质：蓝色点缀 + 蓝色描边 */
-.name-item.rank-优质 {
-    border: 1px solid #66b3ff;
-}
-.name-item.rank-优质::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 12px;
-    height: 100%;
-    background-color: #66b3ff;
-}
+/* 描边 */
+.name-item.rank-鱼王 { border: 1px solid var(--rank-yellow); }
+.name-item.rank-传说 { border: 1px solid var(--rank-purple); }
+.name-item.rank-优质 { border: 1px solid var(--rank-blue); }
+.name-item.rank-普通 { border: 1px solid var(--rank-green); }
+.name-item.rank-常见 { border: 1px solid var(--rank-gray); }
 
-/* 普通：绿色点缀 + 绿色描边 */
-.name-item.rank-普通 {
-    border: 1px solid #a5e885;
-}
-.name-item.rank-普通::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 12px;
-    height: 100%;
-    background-color: #a5e885;
-}
-
-/* 常见：浅灰点缀 + 浅灰描边 */
-.name-item.rank-常见 {
-    border: 1px solid #e0e0e0;
-}
-.name-item.rank-常见::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 12px;
-    height: 100%;
-    background-color: #e0e0e0;
-}
-
-/* --- 卡片头部：鱼名 + 开关 --- */
+/* 卡片头部 */
 .card-header {
     display: flex;
     justify-content: space-between;
@@ -296,17 +300,17 @@ h1 {
 .fish-name {
     font-size: 24px;
     font-weight: 600;
-    color: #333;
+    color: var(--text-primary);
     margin-left: 8px;
 }
 .toggle-switch {
     width: 40px;
     height: 24px;
     border-radius: 12px;
-    background-color: #e0e0e0;
+    background-color: var(--rank-gray);
     position: relative;
     transition: all 0.2s ease;
-    cursor: pointer; /* 仅开关显示指针光标 */
+    cursor: pointer;
 }
 .toggle-switch::after {
     content: '';
@@ -319,27 +323,25 @@ h1 {
     background-color: #fff;
     transition: all 0.2s ease;
 }
-/* 已拥有状态：绿色开关 */
 .name-item.owned .toggle-switch {
-    background-color: #52c41a;
+    background-color: var(--success-color);
 }
 .name-item.owned .toggle-switch::after {
     left: 18px;
 }
 
-/* --- 卡片信息区：大屏一行，小屏换行 --- */
+/* 卡片信息区 */
 .card-info {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 8px;
     font-size: 12px;
-    color: #666;
+    color: var(--text-secondary);
     margin-left: 8px;
 }
 .info-item {
-    /* 大屏默认：强制一行 + 超长省略 */
     display: flex;
-    align-items: flex-start; /* 换行时对齐更美观 */
+    align-items: flex-start;
     gap: 4px;
     white-space: nowrap;
     overflow: hidden;
@@ -347,57 +349,155 @@ h1 {
 }
 .info-label {
     font-weight: 500;
-    color: #999;
-    flex-shrink: 0; /* 标签不压缩 */
+    color: var(--text-light);
+    flex-shrink: 0;
 }
 
-/* ========== 11. 页脚 ========== */
+/* ========== 13. 页脚 ========== */
 .footer-signature {
     margin-top: 40px;
     text-align: center;
     font-size: 14px;
-    color: #999;
+    color: var(--text-light);
     display: flex;
     flex-direction: column;
     gap: 8px;
     padding-bottom: 20px;
 }
 .footer-signature a {
-    color: #409eff;
-    text-decoration: none;
+    color: var(--primary-color);
 }
 .footer-signature a:hover {
     text-decoration: underline;
 }
 
-/* ========== 12. 响应式适配（核心：小屏自动换行） ========== */
+/* ========== 14. 图鉴切换按钮 ========== */
+.tabs-container {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    display: flex;
+    gap: 10px;
+    z-index: 100;
+}
+.tab-btn {
+    padding: 8px 16px;
+    background-color: #f0f8ff;
+    border: 1px solid #4a90e2;
+    border-radius: 6px;
+    color: #4a90e2;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+.tab-btn:hover {
+    background-color: #e6f0ff;
+    border-color: #2979ff;
+}
+.tab-btn.active {
+    background-color: #4a90e2;
+    color: white;
+    border-color: #2979ff;
+    font-weight: bold;
+}
+
+/* ========== 15. 筛选标签 ========== */
+.filter-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 10px 0 15px;
+    min-height: 30px;
+}
+.filter-tag {
+    display: inline-flex;
+    align-items: center;
+    background-color: #f0f0f0;
+    border-radius: 16px;
+    padding: 4px 12px;
+    font-size: 13px;
+    color: #333;
+    transition: all 0.2s;
+}
+.filter-tag .remove-tag {
+    margin-left: 6px;
+    font-size: 16px;
+    line-height: 1;
+    cursor: pointer;
+    color: #999;
+    font-weight: bold;
+}
+.filter-tag .remove-tag:hover {
+    color: #ff4d4f;
+}
+
+/* ========== 16. 骨架屏 ========== */
+.name-item.skeleton {
+    pointer-events: none;
+    animation: skeleton-loading 1.2s ease-in-out infinite;
+}
+@keyframes skeleton-loading {
+    0% { opacity: 0.6; }
+    50% { opacity: 1; }
+    100% { opacity: 0.6; }
+}
+.skeleton .skeleton-title {
+    width: 120px;
+    height: 24px;
+    background-color: #e0e0e0;
+    border-radius: 4px;
+}
+.skeleton .skeleton-switch {
+    width: 40px;
+    height: 24px;
+    background-color: #e0e0e0;
+    border-radius: 12px;
+}
+.skeleton .card-info {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+}
+.skeleton .skeleton-line {
+    height: 16px;
+    background-color: #e0e0e0;
+    border-radius: 4px;
+}
+.skeleton .skeleton-line:nth-child(odd) {
+    width: 80%;
+}
+.skeleton .skeleton-line:nth-child(even) {
+    width: 60%;
+}
+
+/* ========== 17. 响应式适配 ========== */
 @media (max-width: 768px) {
-    h1 {
-        font-size: 24px;
+    h1 { font-size: 24px; }
+    .filter-bar { gap: 8px 10px; }
+    .name-list { grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 15px; }
+    .name-item { padding: 16px; }
+    .fish-name { font-size: 20px; }
+    .info-item { white-space: normal; overflow: visible; text-overflow: clip; line-height: 1.4; }
+    .name-item:hover { transform: translateY(-3px); }
+    .search-wrapper { padding: 0 2px; gap: 6px; }
+    .search-btn { padding: 0 12px; min-width: 70px; font-size: 13px; }
+    #global-search { font-size: 13px; padding: 0 10px; }
+    .tip-text { font-size: 13px; padding: 0 15px; }
+    .season-check-group { gap: 6px; }
+    .season-checkbox-item { font-size: 13px; }
+    .tabs-container {
+        position: static;
+        justify-content: center;
+        margin: 10px 0 20px;
+        flex-wrap: wrap;
+        gap: 8px;
     }
-    .filter-bar {
-        gap: 8px 10px;
+    .tab-btn { padding: 6px 12px; font-size: 12px; }
+    .stats {
+        flex-direction: column;
+        gap: 8px;
     }
-    .name-list {
-        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-        gap: 15px;
-    }
-    .name-item {
-        padding: 16px;
-    }
-    .fish-name {
-        font-size: 20px;
-    }
-    /* 小屏：取消强制一行，允许换行 */
-    .info-item {
-        white-space: normal;
-        overflow: visible;
-        text-overflow: clip;
-        line-height: 1.4; /* 换行后行高更舒适 */
-    }
-    /* 小屏悬浮上浮幅度减小，更适配移动端 */
-    .name-item:hover {
-        transform: translateY(-3px);
-        box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+    .progress-bar {
+        width: 80px;
     }
 }
