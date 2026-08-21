@@ -842,13 +842,59 @@ h1 {
     }
 }
 
-/* ========== 21. 体验新版按钮 ========== */
+/* ========== 21. 编码模态框 ========== */
+.code-modal-box {
+    max-width: 500px;
+}
+.code-modal-desc {
+    margin-bottom: 10px;
+    color: var(--text-secondary);
+    font-size: 14px;
+    line-height: 1.5;
+}
+.code-textarea {
+    width: 100%;
+    height: 120px;
+    padding: 10px;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    font-size: 14px;
+    resize: none;
+    word-break: break-all;
+    font-family: "Courier New", monospace;
+    line-height: 1.5;
+    color: var(--text-primary);
+}
+.code-textarea:focus {
+    border-color: var(--primary-color);
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(64, 158, 255, 0.15);
+}
+.code-modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 15px;
+}
+.code-copy-success {
+    color: var(--success-color) !important;
+    border-color: var(--success-color) !important;
+}
+
+/* 编码模态框移动端适配 */
+@media (max-width: 768px) {
+    .code-modal-box {
+        max-width: 100%;
+    }
+}
+
+/* 返回旧版按钮 */
 .version-switch-btn {
     position: absolute;
     top: 20px;
     left: 20px;
     padding: 8px 16px;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
     color: white;
     border: none;
     border-radius: 6px;
@@ -856,15 +902,15 @@ h1 {
     cursor: pointer;
     z-index: 100;
     transition: all 0.2s ease;
-    box-shadow: 0 2px 8px rgba(102, 126, 234, 0.4);
+    box-shadow: 0 2px 8px rgba(17, 153, 142, 0.4);
 }
 .version-switch-btn:hover {
     opacity: 0.9;
     transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.5);
+    box-shadow: 0 4px 12px rgba(17, 153, 142, 0.5);
 }
 
-/* 体验新版按钮移动端适配 */
+/* 返回旧版按钮移动端适配 */
 @media (max-width: 768px) {
     .version-switch-btn {
         position: static;
