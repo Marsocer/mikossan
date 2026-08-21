@@ -10,12 +10,13 @@
         (function() {
             var hm = document.createElement("script");
             hm.src = "https://hm.baidu.com/hm.js?9a6b3ce1868acaaec8679f2963414851";
-            var s = document.getElementsByTagName("script")[0]; 
+            var s = document.getElementsByTagName("script")[0];
             s.parentNode.insertBefore(hm, s);
         })();
     </script>
 </head>
 <body>
+    <button class="version-switch-btn" onclick="window.location.href='XSD plus/index.html'">体验新版</button>
     <div class="tabs-container">
         <button class="tab-btn active" onclick="window.location.href='index.html'">鱼类图鉴</button>
         <button class="tab-btn" onclick="window.location.href='seashore-index.html'">赶海图鉴</button>
@@ -23,7 +24,7 @@
     </div>
     <div class="container">
         <h1>星砂岛钓鱼佬手记</h1>
-        
+
         <div class="import-export-btn-group">
             <button id="export-all" class="export-btn">导出图鉴信息</button>
             <button id="import-all" class="import-btn">导入图鉴信息</button>
@@ -40,24 +41,27 @@
         </div>
 
         <div class="filter-bar">
+            <!-- 季节筛选 - 移除全选，新增精准开关 -->
             <div class="filter-item">
                 <label>季节:</label>
-                <div class="season-check-group" id="season-group">
-                    <label class="season-checkbox-item">
-                        <input type="checkbox" id="season-select-all" class="season-checkbox"> 全选
+                <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
+                    <label style="display: flex; align-items: center; gap: 4px; white-space: nowrap;">
+                        <input type="checkbox" id="season-precise-toggle"> 精准筛选季节
                     </label>
-                    <label class="season-checkbox-item">
-                        <input type="checkbox" value="春" class="season-checkbox"> 春
-                    </label>
-                    <label class="season-checkbox-item">
-                        <input type="checkbox" value="夏" class="season-checkbox"> 夏
-                    </label>
-                    <label class="season-checkbox-item">
-                        <input type="checkbox" value="秋" class="season-checkbox"> 秋
-                    </label>
-                    <label class="season-checkbox-item">
-                        <input type="checkbox" value="冬" class="season-checkbox"> 冬
-                    </label>
+                    <div class="season-check-group" id="season-group">
+                        <label class="season-checkbox-item">
+                            <input type="checkbox" value="春" class="season-checkbox"> 春
+                        </label>
+                        <label class="season-checkbox-item">
+                            <input type="checkbox" value="夏" class="season-checkbox"> 夏
+                        </label>
+                        <label class="season-checkbox-item">
+                            <input type="checkbox" value="秋" class="season-checkbox"> 秋
+                        </label>
+                        <label class="season-checkbox-item">
+                            <input type="checkbox" value="冬" class="season-checkbox"> 冬
+                        </label>
+                    </div>
                 </div>
             </div>
             <div class="filter-item">
@@ -126,7 +130,7 @@
 
         <div class="footer-signature">
             <a href="https://docs.qq.com/sheet/DZWRzREJ2Z0ttR0RC?tab=BB08J2" target="_blank" rel="noopener noreferrer">腾讯文档在线表格版(保存到自己的腾讯文档里再用)</a>
-            <a target="_blank" rel="noopener noreferrer">有问题可联系邮箱:socer@foxmail.com</a>
+            <a href="mailto:socer@foxmail.com" target="_blank" rel="noopener noreferrer">有问题可联系邮箱:socer@foxmail.com</a>
             <a href="https://github.com/Marsocer/mikossan" target="_blank" rel="noopener noreferrer">项目源码托管 · GitHub</a>
         </div>
     </div>

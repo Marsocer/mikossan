@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
+    <title>物种管理 - 星砂岛钓鱼佬手记</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        body {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .manage-entry-card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            padding: 40px 32px;
+            max-width: 460px;
+            width: 100%;
+            text-align: center;
+        }
+        .manage-entry-card h1 {
+            font-size: 22px;
+            color: var(--text-primary);
+            margin: 0 0 8px;
+        }
+        .manage-entry-card p {
+            font-size: 13px;
+            color: var(--text-secondary);
+            margin: 0 0 28px;
+        }
+        .manage-entry-tabs {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .manage-entry-btn {
+            padding: 14px 20px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            color: white;
+            transition: all 0.2s ease;
+        }
+        .manage-entry-btn:hover {
+            transform: translateY(-2px);
+            opacity: 0.92;
+        }
+        .manage-entry-btn.fish { background: linear-gradient(135deg, #36cfc9 0%, #1890ff 100%); }
+        .manage-entry-btn.seashore { background: linear-gradient(135deg, #ffc53d 0%, #fa8c16 100%); }
+        .manage-entry-btn.insect { background: linear-gradient(135deg, #95de64 0%, #52c41a 100%); }
+    </style>
+</head>
+<body>
+    <div class="manage-entry-card">
+        <h1>物种管理</h1>
+        <p>选择要管理的图鉴分类（本页面无公开入口，请勿外传）</p>
+        <div class="manage-entry-tabs">
+            <button class="manage-entry-btn fish" data-cat="fish">鱼类图鉴</button>
+            <button class="manage-entry-btn seashore" data-cat="seashore">赶海图鉴</button>
+            <button class="manage-entry-btn insect" data-cat="insect">昆虫图鉴</button>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initManage } from './common.js';
+
+        const configs = {
+            fish: {
+                dataUrl: 'fish-data.json',
+                storageKey: 'fishCollect',
+                title: '鱼类',
+                fieldMappings: {
+                    name: ['name', '名称'],
+                    season: ['season', '季节'],
+                    weather: ['weather', '天气'],
+                    time: ['time', '时间'],
+                    bait: ['bait', '窝料'],
+                    water: ['water', '水域', '区域'],
+                    rank: ['rank', '等级']
+                },
+                cardFields: [
+                    { label: '季节', key: 'season' },
+                    { label: '天气', key: 'weather' },
+                    { label: '时间', key: 'time' },
+                    { label: '窝料', key: 'bait' },
+                    { label: '水域', key: 'water' }
+                ],
+                manageFields: [
+                    { key: '名称', label: '名称', type: 'text', required: true },
+                    { key: '等级', label: '等级', type: 'select', options: ['鱼王', '传说', '优质', '普通', '常见'] },
+                    { key: '季节', label: '季节', type: 'season' },
+                    { key: '天气', label: '天气', type: 'checkboxes', options: ['晴天', '雨天', '雪天'] },
+                    { key: '窝料', label: '窝料', type: 'checkboxes', options: ['鱼肉饵料', '昆虫饵料', '素食饵料'] },
+                    { key: '水域', label: '水域', type: 'checkboxes', options: ['河流', '湖泊', '海洋', '珊瑚海', '云霓海域', '明洋海域', '孢子瀑布(悬梦亭)', '暗水畔'] },
+                    { key: '时间', label: '时间', type: 'text', placeholder: '如: 全天 或 6点-18点' }
+                ]
+            },
+            seashore: {
+                dataUrl: 'seashore-data.json',
+                storageKey: 'seashoreCollect',
+                title: '赶海',
+                fieldMappings: {
+                    name: ['name', '名称'],
+                    season: ['season', '季节'],
+                    '获取途径': ['获取途径'],
+                    rank: ['rank', '等级']
+                },
+                cardFields: [
+                    { label: '季节', key: 'season' },
+                    { label: '获取途径', key: '获取途径' }
+                ],
+                manageFields: [
+                    { key: '名称', label: '名称', type: 'text', required: true },
+                    { key: '等级', label: '等级', type: 'select', options: ['王级', '传说', '优质', '普通', '常见'] },
+                    { key: '季节', label: '季节', type: 'season' },
+                    { key: '获取途径', label: '获取途径', type: 'text', placeholder: '如: 在星沙镇南方沙滩区域赶海获取' },
+                    { key: '时间', label: '时间', type: 'text', placeholder: '如: 全天' }
+                ]
+            },
+            insect: {
+                dataUrl: 'insect-data.json',
+                storageKey: 'insectCollect',
+                title: '昆虫',
+                fieldMappings: {
+                    name: ['name', '名称'],
+                    season: ['season', '季节'],
+                    area: ['区域'],
+                    weather: ['weather', '天气'],
+                    time: ['time', '时间'],
+                    rank: ['rank', '等级']
+                },
+                cardFields: [
+                    { label: '季节', key: 'season' },
+                    { label: '区域', key: 'area' },
+                    { label: '天气', key: 'weather' },
+                    { label: '时间', key: 'time' }
+                ],
+                manageFields: [
+                    { key: '名称', label: '名称', type: 'text', required: true },
+                    { key: '等级', label: '等级', type: 'select', options: ['王级', '传说', '优质', '普通', '常见'] },
+                    { key: '季节', label: '季节', type: 'season' },
+                    { key: '区域', label: '区域', type: 'text', placeholder: '如: 树林里,花丛附近' },
+                    { key: '天气', label: '天气', type: 'checkboxes', options: ['晴天', '雨天', '雪天'] },
+                    { key: '时间', label: '时间', type: 'text', placeholder: '如: 全天 或 6点-18点' }
+                ]
+            }
+        };
+
+        // 点击分类按钮 → 打开对应管理模态框
+        document.querySelectorAll('.manage-entry-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                initManage(configs[btn.dataset.cat]);
+            });
+        });
+
+        // 支持 URL 参数直达：manage.html?cat=fish / seashore / insect
+        const cat = new URLSearchParams(location.search).get('cat');
+        if (cat && configs[cat]) {
+            initManage(configs[cat]);
+        }
+    </script>
+</body>
+</html>
