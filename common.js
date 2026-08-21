@@ -1,6 +1,4 @@
-// common.js - 图鉴通用模块（含云端备份 + 物种管理）
-
-const API_BASE_URL = 'http://1404806767-7y8le9rw9r.in.ap-guangzhou.tencentscf.com';
+// common.js - 图鉴通用模块（XSD plus 版 - 编码导入导出）
 
 let pageData = [];
 let baseData = [];
@@ -8,6 +6,7 @@ let collectStatus = {};
 let pageConfig = {};
 let manageModal = null;
 let currentEditName = null;
+let codeModal = null;
 
 export function initPage(config) {
     pageConfig = config;
@@ -33,33 +32,8 @@ export function initPage(config) {
     document.getElementById('export-all')?.addEventListener('click', exportAllCollect);
     document.getElementById('import-all')?.addEventListener('click', importAllCollect);
 
-    document.getElementById('backup-cloud')?.addEventListener('click', backupToCloud);
-    document.getElementById('restore-cloud')?.addEventListener('click', restoreFromCloud);
-
     // 物种管理
     document.getElementById('manage-species')?.addEventListener('click', openManageModal);
-}
-
-// 独立管理页面入口：加载指定分类数据后直接打开管理模态框
-export function initManage(config) {
-    pageConfig = { ...config, filterElements: config.filterElements || [] };
-    collectStatus = JSON.parse(localStorage.getItem(config.storageKey)) || {};
-
-    fetch(config.dataUrl)
-        .then(res => {
-            if (!res.ok) throw new Error('数据加载失败');
-            return res.json();
-        })
-        .then(data => {
-            if (!Array.isArray(data)) throw new Error('数据格式错误');
-            baseData = data;
-            pageData = mergeCustomData(baseData);
-            openManageModal();
-        })
-        .catch(err => {
-            console.error(err);
-            alert('数据加载失败，请检查文件路径');
-        });
 }
 
 // ================== 数据加载 ==================
@@ -84,7 +58,6 @@ function loadData() {
         });
 }
 
-// 重新合并数据并刷新页面（增删改后调用）
 function refreshData() {
     pageData = mergeCustomData(baseData);
     handleFilter();
@@ -191,7 +164,6 @@ function createCard(item) {
     card.className = `name-item rank-${rank} ${isOwned ? 'owned' : ''}`;
     card.dataset.name = name;
 
-    // 卡片头部：名称 + 收藏开关
     const header = document.createElement('div');
     header.className = 'card-header';
 
@@ -209,7 +181,6 @@ function createCard(item) {
     header.appendChild(nameEl);
     header.appendChild(toggle);
 
-    // 卡片信息区
     const info = document.createElement('div');
     info.className = 'card-info';
     if (pageConfig.cardFields) {
@@ -247,9 +218,7 @@ function toggleCollect(name) {
 function updateStats() {
     const total = pageData.length;
     const collected = pageData.filter(item => collectStatus[getField(item, 'name')]).length;
-    const totalEl = document.getElementById('total-count');
-    if (!totalEl) return;
-    totalEl.textContent = total;
+    document.getElementById('total-count').textContent = total;
     document.getElementById('collected-count').textContent = collected;
 
     const progressFill = document.getElementById('progress-fill');
@@ -281,7 +250,6 @@ function bindFilterEvents() {
 function handleFilter() {
     let filtered = [...pageData];
 
-    // 1. 应用配置的筛选器
     pageConfig.filterElements.forEach(el => {
         if (el.type === 'select') {
             const select = document.getElementById(el.id);
@@ -320,7 +288,6 @@ function handleFilter() {
         }
     });
 
-    // 2. 搜索关键词（遍历 fieldMappings 中所有字段）
     const keyword = document.getElementById('global-search')?.value.trim().toLowerCase();
     if (keyword) {
         filtered = filtered.filter(item => {
@@ -471,7 +438,6 @@ function openManageModal() {
 
     document.body.appendChild(manageModal);
 
-    // 绑定事件
     manageModal.querySelector('.manage-close-btn').addEventListener('click', closeManageModal);
     manageModal.querySelector('.manage-add-btn').addEventListener('click', () => openSpeciesForm('add'));
     manageModal.querySelector('.manage-back-btn').addEventListener('click', closeSpeciesForm);
@@ -479,7 +445,6 @@ function openManageModal() {
     manageModal.querySelector('.manage-save-btn').addEventListener('click', saveSpeciesFromForm);
     manageModal.querySelector('#manage-search').addEventListener('input', () => renderManageList());
 
-    // 点击遮罩关闭
     manageModal.addEventListener('click', (e) => {
         if (e.target === manageModal) closeManageModal();
     });
@@ -502,7 +467,6 @@ function renderManageList() {
     const merged = mergeCustomData(baseData);
     const searchTerm = (manageModal.querySelector('#manage-search')?.value || '').trim().toLowerCase();
 
-    // 渲染活跃物种列表
     const listEl = manageModal.querySelector('#manage-list');
     const filtered = searchTerm
         ? merged.filter(item => (getField(item, 'name') || '').toLowerCase().includes(searchTerm))
@@ -515,7 +479,6 @@ function renderManageList() {
         const customType = item._customType;
         const originalName = item._originalName || name;
 
-        // 构建详情文本
         const details = (pageConfig.cardFields || [])
             .map(f => getField(item, f.key))
             .filter(v => v)
@@ -548,7 +511,6 @@ function renderManageList() {
         `;
     }).join('');
 
-    // 绑定列表按钮事件
     listEl.querySelectorAll('.manage-edit-btn').forEach(btn => {
         btn.addEventListener('click', () => openSpeciesForm('edit', btn.dataset.name));
     });
@@ -559,7 +521,6 @@ function renderManageList() {
         btn.addEventListener('click', () => resetSpecies(btn.dataset.name));
     });
 
-    // 渲染已删除物种
     const deletedSection = manageModal.querySelector('#manage-deleted-section');
     const deletedList = manageModal.querySelector('#manage-deleted-list');
     const deletedSpecies = baseData.filter(item =>
@@ -612,7 +573,6 @@ function openSpeciesForm(mode, editName) {
         titleEl.textContent = '添加新物种';
     }
 
-    // 构建表单
     const fields = pageConfig.manageFields || [];
     bodyEl.innerHTML = fields.map(field => {
         const requiredMark = field.required ? ' <span class="required-mark">*</span>' : '';
@@ -648,7 +608,6 @@ function openSpeciesForm(mode, editName) {
         }
     }).join('');
 
-    // 如果是编辑模式，填充当前数据
     if (mode === 'edit') {
         const item = pageData.find(d => getField(d, 'name') === editName);
         if (item) {
@@ -719,16 +678,13 @@ function saveSpeciesFromForm() {
         return;
     }
 
-    // 名称唯一性检查
     const allNames = pageData.map(item => getField(item, 'name'));
     if (currentEditName && currentEditName !== newName) {
-        // 编辑时改名，排除当前物种
         if (allNames.includes(newName)) {
             alert(`名称「${newName}」已存在，请使用其他名称`);
             return;
         }
     } else if (!currentEditName) {
-        // 新增时检查
         if (allNames.includes(newName)) {
             alert(`名称「${newName}」已存在，请使用其他名称`);
             return;
@@ -738,15 +694,11 @@ function saveSpeciesFromForm() {
     const custom = getCustomData();
 
     if (currentEditName) {
-        // 编辑模式
         const additionIndex = custom.additions.findIndex(a => getField(a, 'name') === currentEditName);
 
         if (additionIndex >= 0) {
-            // 编辑的是新增的物种
             custom.additions[additionIndex] = formData;
         } else {
-            // 编辑的是原始物种（可能已被修改过）
-            // 找到 originalName：可能是 currentEditName，也可能是 modifications 中值名称为 currentEditName 的 key
             let originalName = currentEditName;
             for (const [origName, modData] of Object.entries(custom.modifications)) {
                 if (getField(modData, 'name') === currentEditName) {
@@ -754,13 +706,10 @@ function saveSpeciesFromForm() {
                     break;
                 }
             }
-            // 删除旧 modification（以防 originalName 变化）
             delete custom.modifications[originalName];
-            // 用原始名称作为 key 存储新的修改
             custom.modifications[originalName] = formData;
         }
 
-        // 如果名称变了，迁移收藏状态
         if (currentEditName !== newName) {
             if (collectStatus[currentEditName] !== undefined) {
                 collectStatus[newName] = collectStatus[currentEditName];
@@ -769,7 +718,6 @@ function saveSpeciesFromForm() {
             }
         }
     } else {
-        // 新增模式
         custom.additions.push(formData);
     }
 
@@ -784,12 +732,10 @@ function deleteSpecies(displayName, originalName) {
 
     const custom = getCustomData();
 
-    // 检查是否是新增的物种
     const additionIndex = custom.additions.findIndex(a => getField(a, 'name') === displayName);
     if (additionIndex >= 0) {
         custom.additions.splice(additionIndex, 1);
     } else {
-        // 原始物种 - 加入删除列表
         const origName = originalName || displayName;
         if (!custom.deletions.includes(origName)) {
             custom.deletions.push(origName);
@@ -819,170 +765,283 @@ function resetSpecies(originalName) {
     renderManageList();
 }
 
-// ================== 导出为 JSON ==================
-function exportAllCollect() {
-    const backup = {
-        version: '2.1',
-        exportDate: new Date().toISOString(),
-        fishCollect: JSON.parse(localStorage.getItem('fishCollect')) || {},
-        insectCollect: JSON.parse(localStorage.getItem('insectCollect')) || {},
-        seashoreCollect: JSON.parse(localStorage.getItem('seashoreCollect')) || {},
-        fishCollectCustom: JSON.parse(localStorage.getItem('fishCollectCustom')) || { additions: [], modifications: {}, deletions: [] },
-        insectCollectCustom: JSON.parse(localStorage.getItem('insectCollectCustom')) || { additions: [], modifications: {}, deletions: [] },
-        seashoreCollectCustom: JSON.parse(localStorage.getItem('seashoreCollectCustom')) || { additions: [], modifications: {}, deletions: [] }
-    };
+// ================== 二进制位图编码/解码 ==================
 
-    const blob = new Blob([JSON.stringify(backup, null, 2)], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = '星砂岛图鉴备份.json';
-    a.click();
-    URL.revokeObjectURL(url);
+// 通用名称提取（不依赖 pageConfig）
+function getSpeciesName(item) {
+    return item.name || item['\u540d\u79f0'] || '';
 }
 
-// ================== 导入（兼容 JSON 和旧 TXT）==================
-function importAllCollect() {
-    const input = document.createElement('input');
-    input.type = 'file';
-    input.accept = '.txt,.json';
-    input.onchange = e => {
-        const file = e.target.files[0];
-        if (!file) return;
+// 独立于 pageConfig 的数据合并（用于编码导入导出）
+function mergeDataForExport(data, storageKey) {
+    const customKey = storageKey + 'Custom';
+    const custom = JSON.parse(localStorage.getItem(customKey)) || { additions: [], modifications: {}, deletions: [] };
 
-        const reader = new FileReader();
-        reader.readAsText(file, 'UTF-8');
-        reader.onload = ev => {
-            const content = ev.target.result;
+    let merged = data.map(item => {
+        const name = getSpeciesName(item);
+        if (custom.modifications[name]) {
+            return { ...custom.modifications[name] };
+        }
+        return item;
+    });
 
-            try {
-                // 尝试 JSON 格式
-                const json = JSON.parse(content);
-                if (!json.fishCollect || !json.insectCollect || !json.seashoreCollect) {
-                    throw new Error('无效的 JSON 备份格式');
-                }
-                applyImport(json.fishCollect, json.insectCollect, json.seashoreCollect, json);
-            } catch (jsonError) {
-                // 回退到旧 TXT 格式
-                parseLegacyTXT(content);
-            }
-        };
-    };
-    input.click();
+    merged = merged.filter(item => {
+        const name = getSpeciesName(item);
+        return !custom.deletions.includes(name);
+    });
+
+    custom.additions.forEach(a => merged.push({ ...a }));
+
+    return merged;
 }
 
-function applyImport(fishCollect, insectCollect, seashoreCollect, fullJson) {
-    localStorage.setItem('fishCollect', JSON.stringify(fishCollect));
-    localStorage.setItem('insectCollect', JSON.stringify(insectCollect));
-    localStorage.setItem('seashoreCollect', JSON.stringify(seashoreCollect));
-
-    // 导入自定义物种数据（v2.1+）
-    if (fullJson && fullJson.version >= '2.1') {
-        if (fullJson.fishCollectCustom) localStorage.setItem('fishCollectCustom', JSON.stringify(fullJson.fishCollectCustom));
-        if (fullJson.insectCollectCustom) localStorage.setItem('insectCollectCustom', JSON.stringify(fullJson.insectCollectCustom));
-        if (fullJson.seashoreCollectCustom) localStorage.setItem('seashoreCollectCustom', JSON.stringify(fullJson.seashoreCollectCustom));
+// Base36 字符串 -> BigInt
+function base36ToBigInt(str) {
+    let result = 0n;
+    for (const char of str) {
+        let digit;
+        if (char >= '0' && char <= '9') {
+            digit = char.charCodeAt(0) - 48;
+        } else if (char >= 'a' && char <= 'z') {
+            digit = char.charCodeAt(0) - 87;
+        } else if (char >= 'A' && char <= 'Z') {
+            digit = char.charCodeAt(0) - 55;
+        } else {
+            throw new Error('编码包含非法字符: ' + char);
+        }
+        result = result * 36n + BigInt(digit);
     }
-
-    const keyMap = { fishCollect, insectCollect, seashoreCollect };
-    collectStatus = keyMap[pageConfig.storageKey] || {};
-
-    // 重新合并数据并渲染
-    pageData = mergeCustomData(baseData);
-    handleFilter();
-    updateStats();
-
-    const count = Object.values(fishCollect).filter(Boolean).length
-                + Object.values(insectCollect).filter(Boolean).length
-                + Object.values(seashoreCollect).filter(Boolean).length;
-
-    const hasCustom = fullJson && fullJson.version >= '2.1';
-    const customMsg = hasCustom ? '（含自定义物种数据）' : '';
-    alert(`导入成功！共导入 ${count} 种收藏${customMsg}`);
+    return result;
 }
 
-function parseLegacyTXT(content) {
+// BigInt -> 二进制字符串（补零到指定长度）
+function bigIntToBinary(bigInt, length) {
+    if (bigInt === 0n) return '0'.repeat(length);
+    let bits = '';
+    let n = bigInt;
+    while (n > 0n) {
+        bits = (n & 1n).toString() + bits;
+        n = n >> 1n;
+    }
+    while (bits.length < length) {
+        bits = '0' + bits;
+    }
+    return bits;
+}
+
+// 编码：物种列表 + 收藏状态 -> { count, bitmap }
+function encodeBitmap(speciesList, collectStatusObj) {
+    let bits = '';
+    for (const item of speciesList) {
+        const name = getSpeciesName(item);
+        bits += collectStatusObj[name] ? '1' : '0';
+    }
+    const bigInt = bits.length > 0 ? BigInt('0b' + bits) : 0n;
+    const bitmap = bigInt.toString(36);
+    return { count: speciesList.length, bitmap };
+}
+
+// 解码：编码 + 数量 + 物种列表 -> 收藏状态对象
+function decodeToCollectStatus(encoded, count, speciesList) {
+    const bigInt = base36ToBigInt(encoded);
+    const bits = bigIntToBinary(bigInt, count);
+
+    const result = {};
+    for (let i = 0; i < speciesList.length; i++) {
+        const name = getSpeciesName(speciesList[i]);
+        // i < bits.length: 用编码中的位
+        // i >= bits.length: 新增物种，默认未收集
+        result[name] = (i < bits.length) ? bits[i] === '1' : false;
+    }
+    return result;
+}
+
+// ================== 编码导出 ==================
+function exportAllCollect() {
     Promise.all([
         fetch('fish-data.json').then(r => r.json()),
-        fetch('insect-data.json').then(r => r.json()),
-        fetch('seashore-data.json').then(r => r.json())
-    ]).then(([fishData, insectData, seashoreData]) => {
-        const fishCollect = {};
-        const insectCollect = {};
-        const seashoreCollect = {};
+        fetch('seashore-data.json').then(r => r.json()),
+        fetch('insect-data.json').then(r => r.json())
+    ]).then(([fishData, seashoreData, insectData]) => {
+        const fishCollect = JSON.parse(localStorage.getItem('fishCollect')) || {};
+        const seashoreCollect = JSON.parse(localStorage.getItem('seashoreCollect')) || {};
+        const insectCollect = JSON.parse(localStorage.getItem('insectCollect')) || {};
 
-        fishData.forEach(f => fishCollect[f.name || f.名称] = false);
-        insectData.forEach(i => insectCollect[i.name || i.名称] = false);
-        seashoreData.forEach(s => seashoreCollect[s.name || s.名称] = false);
+        const fishMerged = mergeDataForExport(fishData, 'fishCollect');
+        const seashoreMerged = mergeDataForExport(seashoreData, 'seashoreCollect');
+        const insectMerged = mergeDataForExport(insectData, 'insectCollect');
 
-        // 鱼类用【鱼王|传说|...】：名称列表 格式
-        const fishRegex = /【(鱼王|传说|普通|常见|优质)】：([^\n]+)/g;
-        let match;
-        while ((match = fishRegex.exec(content)) !== null) {
-            match[2].split('、').forEach(name => {
-                const n = name.trim();
-                if (fishCollect.hasOwnProperty(n)) fishCollect[n] = true;
-            });
-        }
+        const fishEnc = encodeBitmap(fishMerged, fishCollect);
+        const seashoreEnc = encodeBitmap(seashoreMerged, seashoreCollect);
+        const insectEnc = encodeBitmap(insectMerged, insectCollect);
 
-        // 昆虫/赶海用【王级|传说|...】：名称列表 格式
-        const otherRegex = /【(王级|传说|优质|普通|常见)】：([^\n]+)/g;
-        while ((match = otherRegex.exec(content)) !== null) {
-            match[2].split('、').forEach(name => {
-                const n = name.trim();
-                if (insectCollect.hasOwnProperty(n)) insectCollect[n] = true;
-                else if (seashoreCollect.hasOwnProperty(n)) seashoreCollect[n] = true;
-            });
-        }
+        // 格式: count1|bitmap1|count2|bitmap2|count3|bitmap3
+        const code = [
+            fishEnc.count.toString(36), fishEnc.bitmap,
+            seashoreEnc.count.toString(36), seashoreEnc.bitmap,
+            insectEnc.count.toString(36), insectEnc.bitmap
+        ].join('|');
 
-        applyImport(fishCollect, insectCollect, seashoreCollect);
+        showCodeModal('export', code);
     }).catch(err => {
         console.error(err);
-        alert('导入失败：无法加载数据文件');
+        alert('导出失败：' + err.message);
     });
 }
 
-// ================== 云端备份 ==================
-async function backupToCloud() {
-    const data = {
-        fishCollect: JSON.parse(localStorage.getItem('fishCollect')) || {},
-        insectCollect: JSON.parse(localStorage.getItem('insectCollect')) || {},
-        seashoreCollect: JSON.parse(localStorage.getItem('seashoreCollect')) || {}
-    };
+// ================== 编码导入 ==================
+function importAllCollect() {
+    showCodeModal('import', '');
+}
 
+function applyImportCode(code) {
     try {
-        const response = await fetch(`${API_BASE_URL}/backup`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(data)
-        });
-        const result = await response.json();
-        if (result.id) {
-            alert(`备份成功！您的备份码是：${result.id}\n请妥善保存此码，恢复时需要输入。`);
-        } else {
-            alert('备份失败：' + (result.message || '未知错误'));
+        const cleaned = code.replace(/\s/g, '');
+        const parts = cleaned.split('|');
+        if (parts.length !== 6) {
+            throw new Error('编码格式错误，应为 6 段以 | 分隔');
         }
+
+        const [fishCountStr, fishBitmap, seashoreCountStr, seashoreBitmap, insectCountStr, insectBitmap] = parts;
+        const fishCount = parseInt(fishCountStr, 36);
+        const seashoreCount = parseInt(seashoreCountStr, 36);
+        const insectCount = parseInt(insectCountStr, 36);
+
+        if (isNaN(fishCount) || isNaN(seashoreCount) || isNaN(insectCount)) {
+            throw new Error('编码中的物种数量解析失败');
+        }
+
+        Promise.all([
+            fetch('fish-data.json').then(r => r.json()),
+            fetch('seashore-data.json').then(r => r.json()),
+            fetch('insect-data.json').then(r => r.json())
+        ]).then(([fishData, seashoreData, insectData]) => {
+            const fishMerged = mergeDataForExport(fishData, 'fishCollect');
+            const seashoreMerged = mergeDataForExport(seashoreData, 'seashoreCollect');
+            const insectMerged = mergeDataForExport(insectData, 'insectCollect');
+
+            const fishCollect = decodeToCollectStatus(fishBitmap, fishCount, fishMerged);
+            const seashoreCollect = decodeToCollectStatus(seashoreBitmap, seashoreCount, seashoreMerged);
+            const insectCollect = decodeToCollectStatus(insectBitmap, insectCount, insectMerged);
+
+            localStorage.setItem('fishCollect', JSON.stringify(fishCollect));
+            localStorage.setItem('seashoreCollect', JSON.stringify(seashoreCollect));
+            localStorage.setItem('insectCollect', JSON.stringify(insectCollect));
+
+            // 更新当前页面
+            const keyMap = { fishCollect, seashoreCollect, insectCollect };
+            collectStatus = keyMap[pageConfig.storageKey] || {};
+
+            pageData = mergeCustomData(baseData);
+            handleFilter();
+            updateStats();
+
+            const count = Object.values(fishCollect).filter(Boolean).length
+                        + Object.values(seashoreCollect).filter(Boolean).length
+                        + Object.values(insectCollect).filter(Boolean).length;
+
+            // 物种数量差异提示
+            const diffs = [];
+            if (fishCount < fishMerged.length) diffs.push(`鱼类新增${fishMerged.length - fishCount}种`);
+            if (seashoreCount < seashoreMerged.length) diffs.push(`赶海新增${seashoreMerged.length - seashoreCount}种`);
+            if (insectCount < insectMerged.length) diffs.push(`昆虫新增${insectMerged.length - insectCount}种`);
+            const diffMsg = diffs.length > 0 ? `\n（${diffs.join('、')}默认未收集）` : '';
+
+            alert(`导入成功！共导入 ${count} 种收藏${diffMsg}`);
+            closeCodeModal();
+        }).catch(err => {
+            console.error(err);
+            alert('导入失败：' + err.message);
+        });
     } catch (err) {
-        alert('网络错误，请稍后重试');
+        alert('导入失败：' + err.message);
     }
 }
 
-async function restoreFromCloud() {
-    const code = prompt('请输入您的备份码：');
-    if (!code) return;
+// ================== 编码模态框 ==================
+function showCodeModal(mode, code) {
+    if (codeModal) codeModal.remove();
 
-    try {
-        const response = await fetch(`${API_BASE_URL}/backup?id=${encodeURIComponent(code)}`);
-        const result = await response.json();
-        if (result.data) {
-            localStorage.setItem('fishCollect', JSON.stringify(result.data.fishCollect));
-            localStorage.setItem('insectCollect', JSON.stringify(result.data.insectCollect));
-            localStorage.setItem('seashoreCollect', JSON.stringify(result.data.seashoreCollect));
-            alert('恢复成功！页面即将刷新。');
-            location.reload();
-        } else {
-            alert('恢复失败：' + (result.message || '无效的备份码'));
-        }
-    } catch (err) {
-        alert('网络错误，请稍后重试');
+    codeModal = document.createElement('div');
+    codeModal.className = 'manage-modal-overlay';
+
+    if (mode === 'export') {
+        codeModal.innerHTML = `
+            <div class="manage-modal code-modal-box">
+                <div class="manage-modal-header">
+                    <h2>导出图鉴编码</h2>
+                    <button class="manage-close-btn">&times;</button>
+                </div>
+                <div class="manage-modal-body">
+                    <p class="code-modal-desc">复制下方编码，在其他设备的"导入图鉴编码"中粘贴即可同步收集信息</p>
+                    <textarea class="code-textarea" id="code-output" readonly>${code}</textarea>
+                    <div class="code-modal-actions">
+                        <button class="manage-cancel-btn" id="code-copy-btn">复制编码</button>
+                        <button class="manage-save-btn" id="code-close-btn">关闭</button>
+                    </div>
+                </div>
+            </div>
+        `;
+        document.body.appendChild(codeModal);
+
+        const copyBtn = codeModal.querySelector('#code-copy-btn');
+        copyBtn.addEventListener('click', () => {
+            const textarea = codeModal.querySelector('#code-output');
+            textarea.select();
+            try {
+                document.execCommand('copy');
+                copyBtn.textContent = '已复制!';
+                copyBtn.classList.add('code-copy-success');
+                setTimeout(() => {
+                    copyBtn.textContent = '复制编码';
+                    copyBtn.classList.remove('code-copy-success');
+                }, 2000);
+            } catch (e) {
+                alert('复制失败，请手动选中编码复制');
+            }
+        });
+
+        codeModal.querySelector('#code-close-btn').addEventListener('click', closeCodeModal);
+    } else {
+        codeModal.innerHTML = `
+            <div class="manage-modal code-modal-box">
+                <div class="manage-modal-header">
+                    <h2>导入图鉴编码</h2>
+                    <button class="manage-close-btn">&times;</button>
+                </div>
+                <div class="manage-modal-body">
+                    <p class="code-modal-desc">粘贴图鉴编码，导入收集信息</p>
+                    <textarea class="code-textarea" id="code-input" placeholder="在此粘贴编码..."></textarea>
+                    <div class="code-modal-actions">
+                        <button class="manage-cancel-btn" id="code-cancel-btn">取消</button>
+                        <button class="manage-save-btn" id="code-import-btn">导入</button>
+                    </div>
+                </div>
+            </div>
+        `;
+        document.body.appendChild(codeModal);
+
+        codeModal.querySelector('#code-import-btn').addEventListener('click', () => {
+            const input = codeModal.querySelector('#code-input').value.trim();
+            if (!input) {
+                alert('请输入编码');
+                return;
+            }
+            applyImportCode(input);
+        });
+
+        codeModal.querySelector('#code-cancel-btn').addEventListener('click', closeCodeModal);
+    }
+
+    codeModal.querySelector('.manage-close-btn').addEventListener('click', closeCodeModal);
+    codeModal.addEventListener('click', (e) => {
+        if (e.target === codeModal) closeCodeModal();
+    });
+}
+
+function closeCodeModal() {
+    if (codeModal) {
+        codeModal.remove();
+        codeModal = null;
     }
 }

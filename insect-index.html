@@ -16,7 +16,7 @@
     </script>
 </head>
 <body>
-    <button class="version-switch-btn" onclick="window.location.href='XSD plus/insect-index.html'">体验新版</button>
+    <button class="version-switch-btn" onclick="window.location.href='../insect-index.html'">返回旧版</button>
     <div class="tabs-container">
         <button class="tab-btn" onclick="window.location.href='index.html'">鱼类图鉴</button>
         <button class="tab-btn" onclick="window.location.href='seashore-index.html'">赶海图鉴</button>
@@ -26,14 +26,11 @@
         <h1>星砂岛捕虫手记</h1>
 
         <div class="import-export-btn-group">
-            <button id="export-all" class="export-btn">导出图鉴信息</button>
-            <button id="import-all" class="import-btn">导入图鉴信息</button>
-            <!-- 云端备份按钮暂时隐藏，保留功能以便后续启用 -->
-            <button id="backup-cloud" class="export-btn" style="background-color:#722ed1; display:none;">备份到云端</button>
-            <button id="restore-cloud" class="import-btn" style="background-color:#722ed1; display:none;">从云端恢复</button>
+            <button id="export-all" class="export-btn">导出图鉴编码</button>
+            <button id="import-all" class="import-btn">导入图鉴编码</button>
         </div>
 
-        <div class="tip-text">✨ 收藏标记保存在本地浏览器，清除缓存会丢失哦～更换设备或清除缓存前记得先导出~</div>
+        <div class="tip-text">✨ 收藏标记保存在本地浏览器，更换设备前记得导出编码哦~</div>
 
         <div class="search-wrapper">
             <input type="text" id="global-search" placeholder="搜索名称 / 季节 / 区域 / 天气 ...">
